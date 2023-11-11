@@ -5,8 +5,8 @@ import Pagination from './Pagination'
 function App() {
 
   const [inputText, setInputText] = useState('');
-  const [imageArray, setImageArray] = useState([]);
-
+  const [imageArray, setImageArray] = useState(Array.from({ length: 10 }));
+  const [submitBtn, setSubmitBtn] = useState(false)
   // for Pagination
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -27,24 +27,37 @@ function App() {
     return result;
   }
 
-  // useEffect(() => {
-  //   searchPanel('');
-  // })
 
   const handleQuery = async () => {
     const response = await query({ "inputs": inputText });
     const imageUrl = URL.createObjectURL(response);
 
-    setImageArray((prevImages) => [...prevImages, imageUrl]);
+    // setImageArray((prevImages) => [...prevImages, imageUrl]);
     // setInputText('');
+    setImageArray((prevImages) => {
+      const newImages = [...prevImages];
+      newImages[currentPage - 1] = imageUrl;
+      return newImages;
+    });
   };
 
+  useEffect(() => {
+
+    console.log(imageArray);
+    return () => {
+
+    }
+  }, [imageArray])
+
+
   // console.log(imageArray);
+  const filteredImages = imageArray.filter((image) => image !== undefined);
 
   return (
     <div>
+      
       {/* for Pagination */}
-      <div className='container'>
+      <div className='container border-4'>
         <Pagination
           currentPage={currentPage}
           total={10}
@@ -54,16 +67,27 @@ function App() {
         />
 
       </div>
+
       <input
         type="text"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
+
       <button onClick={handleQuery}>Fetch Image</button>
+      <button onClick={() => setSubmitBtn(!submitBtn)}>See preview</button>
+      {
+        submitBtn ?
+          filteredImages.map((imageSrc, index) => (
+            <img key={index} src={imageSrc} alt={`Fetched Image ${index + 1}`} />
+          ))
+          :
+          null
+      }
       {/* {imageArray.map((imageSrc, index) => (
         <img key={index} src={imageSrc} alt={`Fetched Image ${index + 1}`} />
       ))} */}
-    </div>
+    </div >
   );
 }
 

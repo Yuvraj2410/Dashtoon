@@ -12,21 +12,16 @@ const PaginationItem = ({ page, currentPage, onPageChange, imageArray }) => {
 
 
     return (
-        <>
-
-            <li className={liClasses} onClick={() => onPageChange(page)}>
-                <span className="page-link">{page}</span>
-            </li>
-
-
-        </>
+        <li className={liClasses} onClick={() => onPageChange(page)}>
+            <span className="page-link">{page}</span>
+        </li>
     )
 }
 const Pagination = ({ currentPage, total, limit, onPageChange, imageArray }) => {
     const pagesCount = Math.ceil(total / limit);
     const pages = range(1, pagesCount);
     return (
-        <div>
+        <div className=" border-4">
             <ul className="pagination">
                 {pages.map(page => (
                     <PaginationItem
